@@ -1,0 +1,33 @@
+{
+  "name": "amazon-ebook-scraper",
+  "version": "1.0.0",
+  "description": "Amazon ebook scraper project",
+  "author": "homura10059",
+  "license": "MIT",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "volta": {
+    "node": "18.20.4",
+    "pnpm": "9.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm -r run dev",
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "lint": "pnpm -r run lint",
+    "clean": "pnpm -r run clean",
+    "install:all": "pnpm install",
+    "update:all": "pnpm update"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "keywords": [
+    "amazon",
+    "ebook",
+    "scraper",
+    "monorepo",
+    "pnpm"
+  ]
+}
