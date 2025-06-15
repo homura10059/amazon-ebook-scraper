@@ -1,0 +1,9 @@
+packages:
+  # Core application packages
+  - 'packages/*'
+  # Shared utilities and libraries
+  - 'libs/*'
+  # Tools and scripts
+  - 'tools/*'
+  # Applications (if multiple apps are needed)
+  - 'apps/*'
