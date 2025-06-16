@@ -21,16 +21,11 @@
   },
   "include": [
     "packages/*/src/**/*",
-    "apps/*/src/**/*", 
+    "apps/*/src/**/*",
     "libs/*/src/**/*",
     "tools/*/src/**/*"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts"
-  ],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"],
   "references": [
     {
       "path": "./packages/scraper"
