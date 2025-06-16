@@ -39,8 +39,14 @@ This project uses pnpm as the package manager in a monorepo configuration. Commo
 - `pnpm -F <workspace> add <package>` - Add dependency to specific workspace
 
 ### Package Manager Requirements
-- Node.js >= 18.0.0
-- pnpm >= 8.0.0 (specified in package.json)
+- Node.js 18.20.4 (managed by volta)
+- pnpm 9.0.0 (managed by volta)
+
+### Node.js Version Management
+This project uses [volta](https://volta.sh/) for Node.js and pnpm version management. The versions are specified in the `volta` field in package.json:
+- Install volta: `curl https://get.volta.sh | bash`
+- After installing volta, the correct Node.js and pnpm versions will be automatically used when you cd into this directory
+- Manual installation: `volta install node@18.20.4 pnpm@9.0.0`
 
 ## Monorepo Structure
 
