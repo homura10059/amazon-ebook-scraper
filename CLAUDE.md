@@ -12,6 +12,7 @@ The repository is configured as a pnpm monorepo with:
 - Root package.json with workspace configuration
 - pnpm-workspace.yaml defining workspace structure
 - TypeScript configuration for monorepo development
+- Biome code formatter and linter configured (biome.json)
 - Initial packages structure (packages/, apps/, libs/, tools/)
 - Sample scraper package in packages/scraper
 
@@ -29,6 +30,21 @@ This project uses pnpm as the package manager in a monorepo configuration. Commo
 - `pnpm test` - Run tests for all packages
 - `pnpm lint` - Lint all packages
 - `pnpm clean` - Clean build artifacts from all packages
+
+### Code Formatting and Linting
+This project uses [Biome](https://biomejs.dev/) for code formatting and linting:
+
+- `pnpm format` - Format all files using Biome
+- `pnpm format:check` - Check if files are formatted correctly (no changes)
+- `pnpm lint:biome` - Lint files using Biome
+- `pnpm check` - Run both formatting and linting checks
+- `pnpm check:fix` - Run checks and apply automatic fixes
+
+#### Biome Configuration
+- Configuration is stored in `biome.json` at the project root
+- Uses default Biome settings with 2-space indentation
+- Configured to ignore node_modules, dist, and build directories
+- Integrates with Git for tracking changes
 
 ### Workspace-specific Commands
 - `pnpm -F <package-name> <command>` - Run command in specific package
@@ -68,3 +84,5 @@ The project has been set up with pnpm monorepo configuration. Future development
 - Use workspace references for inter-package dependencies
 - Follow the established TypeScript configuration
 - Maintain consistent naming convention with @amazon-ebook-scraper/ scope
+- Run `pnpm format` before committing to ensure consistent code formatting
+- Use `pnpm check` to verify code formatting and linting before commits

@@ -22,9 +22,5 @@
     "vitest": "^1.0.0",
     "eslint": "^8.0.0"
   },
-  "keywords": [
-    "scraper",
-    "amazon",
-    "ebook"
-  ]
+  "keywords": ["scraper", "amazon", "ebook"]
 }

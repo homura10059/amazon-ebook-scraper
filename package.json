@@ -15,6 +15,11 @@
     "build": "pnpm -r run build",
     "test": "pnpm -r run test",
     "lint": "pnpm -r run lint",
+    "lint:biome": "biome lint .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "check": "biome check .",
+    "check:fix": "biome check --fix .",
     "clean": "pnpm -r run clean",
     "install:all": "pnpm install",
     "update:all": "pnpm update"
@@ -23,11 +28,8 @@
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
   },
-  "keywords": [
-    "amazon",
-    "ebook",
-    "scraper",
-    "monorepo",
-    "pnpm"
-  ]
+  "keywords": ["amazon", "ebook", "scraper", "monorepo", "pnpm"],
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4"
+  }
 }
