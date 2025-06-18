@@ -46,6 +46,9 @@ This project uses [Biome](https://biomejs.dev/) for code formatting and linting:
 - Configured to ignore node_modules, dist, and build directories
 - Integrates with Git for tracking changes
 
+#### ESLint Prohibition
+**IMPORTANT**: ESLint is prohibited in this project. All packages must use Biome for linting and formatting. Do not add ESLint dependencies or configuration to any package.json files. Use `biome check` commands instead of `eslint` commands in package scripts.
+
 ### Workspace-specific Commands
 - `pnpm -F <package-name> <command>` - Run command in specific package
 - `pnpm -F @amazon-ebook-scraper/scraper dev` - Run dev server for scraper package
