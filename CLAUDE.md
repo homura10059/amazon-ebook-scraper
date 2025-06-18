@@ -31,6 +31,33 @@ This project uses pnpm as the package manager in a monorepo configuration. Commo
 - `pnpm lint` - Lint all packages
 - `pnpm clean` - Clean build artifacts from all packages
 
+### Testing and TDD (Test-Driven Development)
+This project follows Test-Driven Development (TDD) practices using [Vitest](https://vitest.dev/):
+
+**TDD Workflow:**
+1. **Red** - Write a failing test first
+2. **Green** - Write minimal code to make the test pass
+3. **Refactor** - Improve code while keeping tests passing
+
+**Testing Commands:**
+- `pnpm test` - Run all tests once
+- `pnpm test:watch` - Run tests in watch mode (for development)
+- `pnpm test:coverage` - Run tests with coverage reporting
+- `pnpm -F <workspace> test` - Run tests for specific workspace
+
+**Testing Guidelines:**
+- Write tests before implementing functionality (TDD)
+- Aim for high test coverage (>80%)
+- Test both happy paths and error scenarios
+- Use descriptive test names that explain the behavior
+- Mock external dependencies (HTTP requests, file system, etc.)
+- Group related tests using `describe` blocks
+
+**Test File Structure:**
+- Place test files next to source files with `.test.ts` extension
+- Use `vitest.config.ts` for test configuration
+- Follow the pattern: `src/module.ts` → `src/module.test.ts`
+
 ### Code Formatting and Linting
 This project uses [Biome](https://biomejs.dev/) for code formatting and linting:
 
