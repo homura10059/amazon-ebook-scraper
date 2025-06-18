@@ -1,4 +1,4 @@
-import axios from "axios";
+import got from "got";
 import * as cheerio from "cheerio";
 import type { ScrapedProduct, ScraperOptions, ScraperError } from "./types.js";
 
@@ -23,8 +23,8 @@ export async function scrapeAmazonProduct(
 
   for (let attempt = 1; attempt <= opts.retries; attempt++) {
     try {
-      const response = await axios.get(url, {
-        timeout: opts.timeout,
+      const response = await got(url, {
+        timeout: { response: opts.timeout },
         headers: {
           "User-Agent": opts.userAgent,
           Accept:
@@ -36,7 +36,7 @@ export async function scrapeAmazonProduct(
         },
       });
 
-      const $ = cheerio.load(response.data);
+      const $ = cheerio.load(response.body);
 
       // Extract title - try multiple selectors as Amazon's HTML structure can vary
       const titleSelectors = [
@@ -109,8 +109,8 @@ export async function scrapeAmazonProduct(
     `Failed to scrape product after ${opts.retries} attempts: ${lastError?.message || "Unknown error"}`
   );
   scraperError.url = url;
-  if (axios.isAxiosError(lastError)) {
-    scraperError.status = lastError.response?.status;
+  if (lastError && 'response' in lastError && lastError.response) {
+    scraperError.status = (lastError.response as any).statusCode;
   }
 
   throw scraperError;
