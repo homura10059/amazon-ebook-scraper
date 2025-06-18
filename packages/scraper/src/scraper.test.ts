@@ -1,7 +1,27 @@
-import { describe, it, expect, vi, beforeEach, afterEach, type MockedFunction } from "vitest";
 import got from "got";
+import {
+  type MockedFunction,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { scrapeAmazonProduct } from "./scraper.js";
-import type { ScrapedProduct, ScraperOptions } from "./types.js";
+import type { ScrapedProduct, ScraperError, ScraperOptions } from "./types.js";
+
+// Type for mocked Got response
+interface MockGotResponse {
+  body: string;
+}
+
+// Type for mocked Got error with response
+interface MockGotError extends Error {
+  response: {
+    statusCode: number;
+  };
+}
 
 // Mock the got library
 vi.mock("got");
@@ -42,7 +62,7 @@ describe("scrapeAmazonProduct", () => {
       // Mock successful response for validation test
       mockedGot.mockResolvedValue({
         body: '<span id="productTitle">Test Book</span><span class="a-price-current"><span class="a-offscreen">￥1,000</span></span>',
-      } as any);
+      } as MockGotResponse);
 
       for (const url of validUrls) {
         const result = await scrapeAmazonProduct(url);
@@ -66,9 +86,11 @@ describe("scrapeAmazonProduct", () => {
         </html>
       `;
 
-      mockedGot.mockResolvedValue({ body: mockHtml } as any);
+      mockedGot.mockResolvedValue({ body: mockHtml } as MockGotResponse);
 
-      const result = await scrapeAmazonProduct("https://amazon.co.jp/product/123");
+      const result = await scrapeAmazonProduct(
+        "https://amazon.co.jp/product/123"
+      );
 
       expect(result).toEqual({
         title: "プログラミング入門 - Kindle版",
@@ -90,9 +112,11 @@ describe("scrapeAmazonProduct", () => {
         </html>
       `;
 
-      mockedGot.mockResolvedValue({ body: mockHtml } as any);
+      mockedGot.mockResolvedValue({ body: mockHtml } as MockGotResponse);
 
-      const result = await scrapeAmazonProduct("https://amazon.co.jp/product/123");
+      const result = await scrapeAmazonProduct(
+        "https://amazon.co.jp/product/123"
+      );
 
       expect(result.title).toBe("Alternative Title Selector");
     });
@@ -107,9 +131,11 @@ describe("scrapeAmazonProduct", () => {
         </html>
       `;
 
-      mockedGot.mockResolvedValue({ body: mockHtml } as any);
+      mockedGot.mockResolvedValue({ body: mockHtml } as MockGotResponse);
 
-      const result = await scrapeAmazonProduct("https://amazon.co.jp/product/123");
+      const result = await scrapeAmazonProduct(
+        "https://amazon.co.jp/product/123"
+      );
 
       expect(result.price).toBe("¥950");
     });
@@ -126,9 +152,11 @@ describe("scrapeAmazonProduct", () => {
         </html>
       `;
 
-      mockedGot.mockResolvedValue({ body: mockHtml } as any);
+      mockedGot.mockResolvedValue({ body: mockHtml } as MockGotResponse);
 
-      const result = await scrapeAmazonProduct("https://amazon.co.jp/product/123");
+      const result = await scrapeAmazonProduct(
+        "https://amazon.co.jp/product/123"
+      );
 
       expect(result.title).toBe("Title with extra spaces");
     });
@@ -146,11 +174,11 @@ describe("scrapeAmazonProduct", () => {
         </html>
       `;
 
-      mockedGot.mockResolvedValue({ body: mockHtml } as any);
+      mockedGot.mockResolvedValue({ body: mockHtml } as MockGotResponse);
 
-      await expect(scrapeAmazonProduct("https://amazon.co.jp/product/123")).rejects.toThrow(
-        "Could not find product title"
-      );
+      await expect(
+        scrapeAmazonProduct("https://amazon.co.jp/product/123")
+      ).rejects.toThrow("Could not find product title");
     });
 
     it("should throw error when price is not found", async () => {
@@ -162,11 +190,11 @@ describe("scrapeAmazonProduct", () => {
         </html>
       `;
 
-      mockedGot.mockResolvedValue({ body: mockHtml } as any);
+      mockedGot.mockResolvedValue({ body: mockHtml } as MockGotResponse);
 
-      await expect(scrapeAmazonProduct("https://amazon.co.jp/product/123")).rejects.toThrow(
-        "Could not find product price"
-      );
+      await expect(
+        scrapeAmazonProduct("https://amazon.co.jp/product/123")
+      ).rejects.toThrow("Could not find product price");
     });
   });
 
@@ -185,9 +213,11 @@ describe("scrapeAmazonProduct", () => {
 
       mockedGot
         .mockRejectedValueOnce(new Error("Network error"))
-        .mockResolvedValueOnce({ body: successHtml } as any);
+        .mockResolvedValueOnce({ body: successHtml } as MockGotResponse);
 
-      const result = await scrapeAmazonProduct("https://amazon.co.jp/product/123");
+      const result = await scrapeAmazonProduct(
+        "https://amazon.co.jp/product/123"
+      );
 
       expect(result.title).toBe("Success Book");
       expect(mockedGot).toHaveBeenCalledTimes(2);
@@ -197,14 +227,13 @@ describe("scrapeAmazonProduct", () => {
       mockedGot.mockRejectedValue(new Error("Network error"));
 
       const options: ScraperOptions = { retries: 1 };
-      
+
       await expect(
         scrapeAmazonProduct("https://amazon.co.jp/product/123", options)
       ).rejects.toThrow("Failed to scrape product after 1 attempts");
-      
+
       expect(mockedGot).toHaveBeenCalledTimes(1);
     });
-
   });
 
   describe("custom options", () => {
@@ -220,7 +249,7 @@ describe("scrapeAmazonProduct", () => {
         </html>
       `;
 
-      mockedGot.mockResolvedValue({ body: mockHtml } as any);
+      mockedGot.mockResolvedValue({ body: mockHtml } as MockGotResponse);
 
       const options: ScraperOptions = { timeout: 5000 };
       await scrapeAmazonProduct("https://amazon.co.jp/product/123", options);
@@ -245,7 +274,7 @@ describe("scrapeAmazonProduct", () => {
         </html>
       `;
 
-      mockedGot.mockResolvedValue({ body: mockHtml } as any);
+      mockedGot.mockResolvedValue({ body: mockHtml } as MockGotResponse);
 
       const options: ScraperOptions = { userAgent: "Custom Bot 1.0" };
       await scrapeAmazonProduct("https://amazon.co.jp/product/123", options);
@@ -271,25 +300,28 @@ describe("scrapeAmazonProduct", () => {
       try {
         await scrapeAmazonProduct(url, options);
         expect.fail("Should have thrown an error");
-      } catch (error: any) {
-        expect(error.url).toBe(url);
-        expect(error.message).toContain("Failed to scrape product after 1 attempts");
-        expect(error.message).toContain("Network error");
+      } catch (error: unknown) {
+        expect((error as ScraperError).url).toBe(url);
+        expect((error as ScraperError).message).toContain(
+          "Failed to scrape product after 1 attempts"
+        );
+        expect((error as ScraperError).message).toContain("Network error");
       }
     });
 
     it("should include status code in error when available", async () => {
-      const httpError = new Error("HTTP Error") as any;
-      httpError.response = { statusCode: 404 };
+      const httpError: MockGotError = Object.assign(new Error("HTTP Error"), {
+        response: { statusCode: 404 },
+      });
       mockedGot.mockRejectedValue(httpError);
 
       const options: ScraperOptions = { retries: 1 };
-      
+
       try {
         await scrapeAmazonProduct("https://amazon.co.jp/product/123", options);
         expect.fail("Should have thrown an error");
-      } catch (error: any) {
-        expect(error.status).toBe(404);
+      } catch (error: unknown) {
+        expect((error as ScraperError).status).toBe(404);
       }
     });
   });
@@ -325,9 +357,11 @@ describe("scrapeAmazonProduct", () => {
         </html>
       `;
 
-      mockedGot.mockResolvedValue({ body: complexHtml } as any);
+      mockedGot.mockResolvedValue({ body: complexHtml } as MockGotResponse);
 
-      const result = await scrapeAmazonProduct("https://amazon.co.jp/product/123");
+      const result = await scrapeAmazonProduct(
+        "https://amazon.co.jp/product/123"
+      );
 
       expect(result).toEqual({
         title: "JavaScript完全ガイド 第7版 - モダンWebアプリケーション開発入門",

@@ -1,6 +1,18 @@
-import got from "got";
 import * as cheerio from "cheerio";
-import type { ScrapedProduct, ScraperOptions, ScraperError } from "./types.js";
+import got from "got";
+import type { ScrapedProduct, ScraperError, ScraperOptions } from "./types.js";
+
+// Type for Got response
+interface GotResponse {
+  body: string;
+}
+
+// Type for Got error with response
+interface GotErrorWithResponse extends Error {
+  response?: {
+    statusCode: number;
+  };
+}
 
 const DEFAULT_OPTIONS: Required<ScraperOptions> = {
   timeout: 10000,
@@ -23,7 +35,7 @@ export async function scrapeAmazonProduct(
 
   for (let attempt = 1; attempt <= opts.retries; attempt++) {
     try {
-      const response = await got(url, {
+      const response: GotResponse = await got(url, {
         timeout: { response: opts.timeout },
         headers: {
           "User-Agent": opts.userAgent,
@@ -99,9 +111,7 @@ export async function scrapeAmazonProduct(
       }
 
       // Wait before retry (exponential backoff)
-      await new Promise((resolve) =>
-        setTimeout(resolve, Math.pow(2, attempt) * 1000)
-      );
+      await new Promise((resolve) => setTimeout(resolve, 2 ** attempt * 1000));
     }
   }
 
@@ -109,8 +119,10 @@ export async function scrapeAmazonProduct(
     `Failed to scrape product after ${opts.retries} attempts: ${lastError?.message || "Unknown error"}`
   );
   scraperError.url = url;
-  if (lastError && 'response' in lastError && lastError.response) {
-    scraperError.status = (lastError.response as any).statusCode;
+  if (lastError && "response" in lastError && lastError.response) {
+    scraperError.status = (
+      lastError as GotErrorWithResponse
+    ).response?.statusCode;
   }
 
   throw scraperError;

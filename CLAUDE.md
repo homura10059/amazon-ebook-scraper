@@ -76,6 +76,23 @@ This project uses [Biome](https://biomejs.dev/) for code formatting and linting:
 #### ESLint Prohibition
 **IMPORTANT**: ESLint is prohibited in this project. All packages must use Biome for linting and formatting. Do not add ESLint dependencies or configuration to any package.json files. Use `biome check` commands instead of `eslint` commands in package scripts.
 
+### Pre-commit Verification
+**CRITICAL**: Before committing any changes, you MUST ensure that all of the following commands pass without errors:
+
+1. **Lint Check**: `pnpm lint` - All linting rules must pass
+2. **Build Check**: `pnpm build` - All packages must compile successfully  
+3. **Test Check**: `pnpm test` - All tests must pass
+
+**Verification Workflow:**
+```bash
+# Run all verification steps
+pnpm lint    # Fix any linting issues
+pnpm build   # Ensure code compiles
+pnpm test    # Verify all tests pass
+```
+
+**IMPORTANT**: Never commit changes that fail any of these checks. This ensures code quality and prevents broken builds in the repository. If any step fails, fix the issues before committing.
+
 ### Workspace-specific Commands
 - `pnpm -F <package-name> <command>` - Run command in specific package
 - `pnpm -F @amazon-ebook-scraper/scraper dev` - Run dev server for scraper package
