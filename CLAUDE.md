@@ -93,6 +93,41 @@ pnpm test    # Verify all tests pass
 
 **IMPORTANT**: Never commit changes that fail any of these checks. This ensures code quality and prevents broken builds in the repository. If any step fails, fix the issues before committing.
 
+### Coding Style and Paradigms
+
+#### Functional Programming Preference
+**IMPORTANT**: This project follows functional programming principles wherever possible. All new code should be written in functional style:
+
+**Functional Programming Guidelines:**
+- **Pure Functions**: Functions should be predictable with no side effects
+- **Immutable Data**: Avoid `let` variables and mutations; prefer `const` and creating new objects
+- **Higher-Order Functions**: Use functions that accept or return other functions
+- **Function Composition**: Break complex logic into small, composable functions
+- **Avoid Imperative Loops**: Use `map()`, `filter()`, `find()`, `reduce()` instead of `for` loops
+- **Eliminate Mutable State**: Use functional patterns instead of stateful variables
+
+**Functional Patterns to Use:**
+```typescript
+// Good: Functional selector matching
+const findValue = (selectors: readonly string[]) =>
+  selectors
+    .map(selector => $(selector).text().trim())
+    .find(text => text.length > 0) || null;
+
+// Avoid: Imperative loops with mutations
+let value = "";
+for (const selector of selectors) {
+  value = $(selector).text().trim();
+  if (value) break;
+}
+```
+
+**Refactoring Existing Code:**
+- When modifying existing procedural code, refactor it to functional style
+- Replace mutable variables with pure functions
+- Use function composition instead of sequential mutations
+- Apply the principles incrementally while maintaining test compatibility
+
 ### Workspace-specific Commands
 - `pnpm -F <package-name> <command>` - Run command in specific package
 - `pnpm -F @amazon-ebook-scraper/scraper dev` - Run dev server for scraper package
