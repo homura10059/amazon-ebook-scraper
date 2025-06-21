@@ -10,6 +10,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "biome check src/",
+    "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
   "dependencies": {
@@ -23,9 +24,5 @@
     "typescript": "^5.8.3",
     "vitest": "^1.0.0"
   },
-  "keywords": [
-    "scraper",
-    "amazon",
-    "ebook"
-  ]
+  "keywords": ["scraper", "amazon", "ebook"]
 }

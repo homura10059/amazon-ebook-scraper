@@ -46,14 +46,12 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
-      - name: Biome lint check
-        run: pnpm lint:biome
-
-      - name: ESLint check
+      - name: Lint check
         run: pnpm lint
 
       - name: TypeScript type check
-        run: pnpm -r exec tsc --noEmit
+        run: pnpm typecheck
+
 
       - name: Run tests
         run: pnpm test
