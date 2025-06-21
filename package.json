@@ -15,7 +15,7 @@
     "build": "pnpm -r run build",
     "test": "pnpm -r run test",
     "lint": "pnpm -r run lint",
-    "lint:biome": "biome lint .",
+    "typecheck": "pnpm -r run typecheck",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "check": "biome check .",
