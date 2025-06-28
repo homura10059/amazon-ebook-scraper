@@ -59,21 +59,28 @@ This project uses [Biome](https://biomejs.dev/) for code formatting and linting:
 **IMPORTANT**: ESLint is prohibited in this project. All packages must use Biome for linting and formatting. Do not add ESLint dependencies or configuration to any package.json files. Use `biome check` commands instead of `eslint` commands in package scripts.
 
 ### Pre-commit Verification
-**CRITICAL**: Before committing any changes, you MUST ensure that all of the following commands pass without errors:
+**CRITICAL**: This project uses an automated pre-commit hook that runs verification checks before allowing commits. The hook automatically executes:
 
 1. **Lint Check**: `pnpm lint` - All linting rules must pass
 2. **Build Check**: `pnpm build` - All packages must compile successfully  
 3. **Test Check**: `pnpm test` - All tests must pass
 
-**Verification Workflow:**
+**Automated Hook**: The pre-commit hook is available in `scripts/pre-commit` and can be installed by running:
 ```bash
-# Run all verification steps
+./scripts/setup-hooks.sh
+```
+
+Once installed, the hook will automatically run these checks when you attempt to commit. If any check fails, the commit will be rejected.
+
+**Manual Verification Workflow:**
+```bash
+# Run all verification steps manually (same as the hook)
 pnpm lint    # Fix any linting issues
 pnpm build   # Ensure code compiles
 pnpm test    # Verify all tests pass
 ```
 
-**IMPORTANT**: Never commit changes that fail any of these checks. This ensures code quality and prevents broken builds in the repository. If any step fails, fix the issues before committing.
+**IMPORTANT**: The pre-commit hook ensures code quality and prevents broken builds in the repository. If the hook prevents a commit, fix the issues and try committing again.
 
 ### Coding Style and Paradigms
 
