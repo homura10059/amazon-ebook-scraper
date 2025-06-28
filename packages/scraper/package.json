@@ -12,7 +12,7 @@
     "lint": "biome check src/",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist",
-    "ts": "set -a && source .env && set +a && node --experimental-strip-types --experimental-transform-types --experimental-detect-module --no-warnings=ExperimentalWarning"
+    "ts": "set -a && source .env && set +a && tsx"
   },
   "dependencies": {
     "got": "^14.0.0",
