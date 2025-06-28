@@ -81,7 +81,18 @@ export const validateNotificationData = (
     };
   }
 
-  const product = notificationData.product;
+  const product = notificationData.product as Record<string, unknown>;
+
+  if (!product || typeof product !== "object") {
+    return {
+      success: false,
+      error: {
+        type: "validation_error",
+        message: "Product data must be an object",
+        field: "product",
+      },
+    };
+  }
 
   if (!product.title || typeof product.title !== "string") {
     return {
@@ -118,7 +129,7 @@ export const validateNotificationData = (
 
   return {
     success: true,
-    data: notificationData as NotificationData,
+    data: notificationData as unknown as NotificationData,
   };
 };
 
@@ -139,7 +150,7 @@ export const validateConfig = (
 
   const configData = config as Record<string, unknown>;
 
-  const webhookResult = validateWebhookUrl(configData.webhookUrl);
+  const webhookResult = validateWebhookUrl(configData.webhookUrl as string);
   if (!webhookResult.success) {
     return webhookResult;
   }
@@ -148,7 +159,9 @@ export const validateConfig = (
     success: true,
     data: {
       webhookUrl: webhookResult.data,
-      options: configData.options,
+      options: configData.options as
+        | import("./types").DiscordOptions
+        | undefined,
     },
   };
 };
