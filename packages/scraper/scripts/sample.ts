@@ -6,14 +6,14 @@ const main = async (): Promise<void> => {
   try {
     // Sample Amazon.co.jp ebook URL
     const url = "https://www.amazon.co.jp/dp/B00I8AT1D6"; // Sample Kindle book
-    
+
     console.log("Scraping Amazon product...");
     console.log(`URL: ${url}`);
     console.log("---");
 
     const result = await scrapeAmazonProduct(url, {
       timeout: 15000,
-      retries: 2
+      retries: 2,
     });
 
     console.log("Scraping successful!");
