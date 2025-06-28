@@ -1,5 +1,5 @@
-export { scrapeAmazonProduct } from "./scraper.js";
-export type { ScrapedProduct, ScraperOptions, ScraperError } from "./types.js";
+export { scrapeAmazonProduct } from "./scraper";
+export type { ScrapedProduct, ScraperOptions, ScraperError } from "./types";
 
 // Re-export for convenience
-export { scrapeAmazonProduct as default } from "./scraper.js";
+export { scrapeAmazonProduct as default } from "./scraper";

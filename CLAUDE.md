@@ -77,6 +77,11 @@ pnpm test    # Verify all tests pass
 
 ### Coding Style and Paradigms
 
+#### TypeScript Import Conventions
+- **CRITICAL**: When importing TypeScript files, NEVER include file extensions
+- Use `import { module } from "./path"` (correct)
+- Never use `import { module } from "./path.js"` or `import { module } from "./path.ts"` (incorrect)
+
 #### Functional Programming Preference
 - @docs/functional-programming.md 
 - **Important**: All new code should follow functional programming principles

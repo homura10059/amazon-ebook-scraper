@@ -8,8 +8,8 @@ import {
   it,
   vi,
 } from "vitest";
-import { scrapeAmazonProduct } from "./scraper.js";
-import type { ScrapedProduct, ScraperError, ScraperOptions } from "./types.js";
+import { scrapeAmazonProduct } from "./scraper";
+import type { ScrapedProduct, ScraperError, ScraperOptions } from "./types";
 
 // Type for mocked Got response
 interface MockGotResponse {

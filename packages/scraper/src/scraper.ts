@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 import got from "got";
-import type { ScrapedProduct, ScraperError, ScraperOptions } from "./types.js";
+import type { ScrapedProduct, ScraperError, ScraperOptions } from "./types";
 
 // Type for Got response
 interface GotResponse {
