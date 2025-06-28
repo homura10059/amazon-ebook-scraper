@@ -32,31 +32,13 @@ This project uses pnpm as the package manager in a monorepo configuration. Commo
 - `pnpm clean` - Clean build artifacts from all packages
 
 ### Testing and TDD (Test-Driven Development)
-This project follows Test-Driven Development (TDD) practices using [Vitest](https://vitest.dev/):
-
-**TDD Workflow:**
-1. **Red** - Write a failing test first
-2. **Green** - Write minimal code to make the test pass
-3. **Refactor** - Improve code while keeping tests passing
-
-**Testing Commands:**
+- @docs/tdd.md
+ 
+**Quick Reference:**
 - `pnpm test` - Run all tests once
 - `pnpm test:watch` - Run tests in watch mode (for development)
 - `pnpm test:coverage` - Run tests with coverage reporting
 - `pnpm -F <workspace> test` - Run tests for specific workspace
-
-**Testing Guidelines:**
-- Write tests before implementing functionality (TDD)
-- Aim for high test coverage (>80%)
-- Test both happy paths and error scenarios
-- Use descriptive test names that explain the behavior
-- Mock external dependencies (HTTP requests, file system, etc.)
-- Group related tests using `describe` blocks
-
-**Test File Structure:**
-- Place test files next to source files with `.test.ts` extension
-- Use `vitest.config.ts` for test configuration
-- Follow the pattern: `src/module.ts` → `src/module.test.ts`
 
 ### Code Formatting and Linting
 This project uses [Biome](https://biomejs.dev/) for code formatting and linting:
@@ -96,37 +78,8 @@ pnpm test    # Verify all tests pass
 ### Coding Style and Paradigms
 
 #### Functional Programming Preference
-**IMPORTANT**: This project follows functional programming principles wherever possible. All new code should be written in functional style:
-
-**Functional Programming Guidelines:**
-- **Pure Functions**: Functions should be predictable with no side effects
-- **Immutable Data**: Avoid `let` variables and mutations; prefer `const` and creating new objects
-- **Higher-Order Functions**: Use functions that accept or return other functions
-- **Function Composition**: Break complex logic into small, composable functions
-- **Avoid Imperative Loops**: Use `map()`, `filter()`, `find()`, `reduce()` instead of `for` loops
-- **Eliminate Mutable State**: Use functional patterns instead of stateful variables
-
-**Functional Patterns to Use:**
-```typescript
-// Good: Functional selector matching
-const findValue = (selectors: readonly string[]) =>
-  selectors
-    .map(selector => $(selector).text().trim())
-    .find(text => text.length > 0) || null;
-
-// Avoid: Imperative loops with mutations
-let value = "";
-for (const selector of selectors) {
-  value = $(selector).text().trim();
-  if (value) break;
-}
-```
-
-**Refactoring Existing Code:**
-- When modifying existing procedural code, refactor it to functional style
-- Replace mutable variables with pure functions
-- Use function composition instead of sequential mutations
-- Apply the principles incrementally while maintaining test compatibility
+- @docs/functional-programming.md 
+- **Important**: All new code should follow functional programming principles
 
 ### Workspace-specific Commands
 - `pnpm -F <package-name> <command>` - Run command in specific package

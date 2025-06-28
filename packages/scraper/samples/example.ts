@@ -3,7 +3,7 @@ import { scrapeAmazonProduct } from "../src/scraper.js";
 async function example() {
   try {
     // Example Amazon.co.jp URL (replace with actual product URL)
-    const url = "https://www.amazon.co.jp/dp/XXXXXXXXXX";
+    const url = "https://www.amazon.co.jp/dp/B0CDTM3795";
 
     console.log("Scraping product:", url);
 
@@ -22,7 +22,8 @@ async function example() {
   }
 }
 
-// Run example if this file is executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  example();
+const main = async () => {
+  await example();
 }
+
+main();
