@@ -58,19 +58,19 @@ This project uses [Biome](https://biomejs.dev/) for code formatting and linting:
 #### ESLint Prohibition
 **IMPORTANT**: ESLint is prohibited in this project. All packages must use Biome for linting and formatting. Do not add ESLint dependencies or configuration to any package.json files. Use `biome check` commands instead of `eslint` commands in package scripts.
 
-### Pre-commit Verification
-**CRITICAL**: This project uses an automated pre-commit hook that runs verification checks before allowing commits. The hook automatically executes:
+### Pre-push Verification
+**CRITICAL**: This project uses an automated pre-push hook that runs verification checks before allowing pushes. The hook automatically executes:
 
 1. **Lint Check**: `pnpm lint` - All linting rules must pass
 2. **Build Check**: `pnpm build` - All packages must compile successfully  
 3. **Test Check**: `pnpm test` - All tests must pass
 
-**Automated Hook**: The pre-commit hook is available in `scripts/pre-commit` and can be installed by running:
+**Automated Hook**: The pre-push hook is available in `scripts/pre-push` and can be installed by running:
 ```bash
 ./scripts/setup-hooks.sh
 ```
 
-Once installed, the hook will automatically run these checks when you attempt to commit. If any check fails, the commit will be rejected.
+Once installed, the hook will automatically run these checks when you attempt to push. If any check fails, the push will be rejected.
 
 **Manual Verification Workflow:**
 ```bash
@@ -80,7 +80,7 @@ pnpm build   # Ensure code compiles
 pnpm test    # Verify all tests pass
 ```
 
-**IMPORTANT**: The pre-commit hook ensures code quality and prevents broken builds in the repository. If the hook prevents a commit, fix the issues and try committing again.
+**IMPORTANT**: The pre-push hook ensures code quality and prevents broken builds in the repository. If the hook prevents a push, fix the issues and try pushing again.
 
 ### Coding Style and Paradigms
 

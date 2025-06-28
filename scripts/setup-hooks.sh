@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Setup script for git hooks
-# This script installs the pre-commit hook for the Amazon Ebook Scraper project
+# This script installs the pre-push hook for the Amazon Ebook Scraper project
 
 echo "Setting up git hooks..."
 
@@ -11,15 +11,15 @@ if [ ! -f "package.json" ] || [ ! -d ".git" ]; then
     exit 1
 fi
 
-# Copy pre-commit hook to .git/hooks/
-echo "Installing pre-commit hook..."
-cp scripts/pre-commit .git/hooks/pre-commit
+# Copy pre-push hook to .git/hooks/
+echo "Installing pre-push hook..."
+cp scripts/pre-push .git/hooks/pre-push
 
 # Make the hook executable
-chmod +x .git/hooks/pre-commit
+chmod +x .git/hooks/pre-push
 
-echo "✅ Pre-commit hook installed successfully!"
-echo "The hook will now run automatically before each commit to verify:"
+echo "✅ Pre-push hook installed successfully!"
+echo "The hook will now run automatically before each push to verify:"
 echo "  - pnpm lint (code formatting and linting)"
 echo "  - pnpm build (compilation check)"
 echo "  - pnpm test (test suite)"
