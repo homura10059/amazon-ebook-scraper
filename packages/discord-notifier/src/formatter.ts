@@ -83,63 +83,67 @@ const createProductEmbed = (
   const formattedTitle = formatTitle(product.title);
   const timestamp = formatTimestamp(product.timestamp);
 
-  // Build fields array functionally
-  const baseFields = [
-    {
-      name: "📚 商品名",
-      value: formattedTitle,
-      inline: false,
-    },
-    {
-      name: "💰 価格",
-      value: priceResult.data,
-      inline: true,
-    },
-    {
-      name: "🕒 取得時刻",
-      value: `<t:${product.timestamp}:F>`,
-      inline: true,
-    },
-  ];
-
-  // Add optional metadata fields
-  const additionalFields = [];
-
-  if (metadata?.source) {
-    additionalFields.push({
-      name: "🔗 ソース",
-      value: truncateText(metadata.source),
-      inline: false,
-    });
-  }
-
-  if (metadata?.url) {
-    additionalFields.push({
-      name: "🌐 URL",
-      value: truncateText(metadata.url),
-      inline: false,
-    });
-  }
-
-  if (metadata?.description) {
-    additionalFields.push({
-      name: "📝 説明",
-      value: truncateText(metadata.description),
-      inline: false,
-    });
-  }
-
   const embed: DiscordEmbed = {
     title: "🛒 新しい商品が見つかりました",
     color: DISCORD_COLORS.INFO,
     timestamp,
-    fields: [...baseFields, ...additionalFields],
+    fields: [
+      {
+        name: "📚 商品名",
+        value: formattedTitle,
+        inline: false,
+      },
+      {
+        name: "💰 価格",
+        value: priceResult.data,
+        inline: true,
+      },
+      {
+        name: "🕒 取得時刻",
+        value: `<t:${product.timestamp}:F>`,
+        inline: true,
+      },
+    ],
     footer: {
       text: "Amazon Ebook Scraper",
       iconUrl:
         "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@v9/icons/amazon.svg",
     },
   };
+
+  // Add optional metadata fields
+  if (metadata?.source) {
+    embed.fields = [
+      ...embed.fields,
+      {
+        name: "🔗 ソース",
+        value: truncateText(metadata.source),
+        inline: false,
+      },
+    ];
+  }
+
+  if (metadata?.url) {
+    embed.fields = [
+      ...embed.fields,
+      {
+        name: "🌐 URL",
+        value: truncateText(metadata.url),
+        inline: false,
+      },
+    ];
+  }
+
+  if (metadata?.description) {
+    embed.fields = [
+      ...embed.fields,
+      {
+        name: "📝 説明",
+        value: truncateText(metadata.description),
+        inline: false,
+      },
+    ];
+  }
 
   return {
     success: true,

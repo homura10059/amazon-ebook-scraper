@@ -1,43 +1,45 @@
 // Re-export types
+export type {
+  WebhookURL,
+  DiscordMessage,
+  FormattedPrice,
+  Timestamp,
+  Result,
+  ScrapedProduct,
+  NotificationData,
+  NotificationMetadata,
+  DiscordNotifierConfig,
+  DiscordOptions,
+  DiscordEmbed,
+  DiscordEmbedField,
+  DiscordEmbedFooter,
+  DiscordWebhookPayload,
+  NotificationError,
+  FormatMessage,
+  SendNotification,
+  ValidateWebhookUrl,
+} from "./types";
+
+// Re-export validation functions
+export {
+  validateWebhookUrl,
+  validateNotificationData,
+  validateConfig,
+  validateTimeout,
+} from "./validation";
 
 // Re-export formatting functions
 export {
   formatMessage,
   formatSimpleMessage,
 } from "./formatter";
+
 // Re-export notification functions
 export {
-  sendBatchNotifications,
   sendDiscordNotification,
   testWebhook,
+  sendBatchNotifications,
 } from "./notifier";
-export type {
-  DiscordEmbed,
-  DiscordEmbedField,
-  DiscordEmbedFooter,
-  DiscordMessage,
-  DiscordNotifierConfig,
-  DiscordOptions,
-  DiscordWebhookPayload,
-  FormatMessage,
-  FormattedPrice,
-  NotificationData,
-  NotificationError,
-  NotificationMetadata,
-  Result,
-  ScrapedProduct,
-  SendNotification,
-  Timestamp,
-  ValidateWebhookUrl,
-  WebhookURL,
-} from "./types";
-// Re-export validation functions
-export {
-  validateConfig,
-  validateNotificationData,
-  validateTimeout,
-  validateWebhookUrl,
-} from "./validation";
 
 import { formatMessage } from "./formatter";
 import { sendDiscordNotification } from "./notifier";

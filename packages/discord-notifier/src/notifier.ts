@@ -8,6 +8,7 @@ import type {
 import { validateTimeout } from "./validation";
 
 // Default configuration values
+const DEFAULT_TIMEOUT = 5000; // 5 seconds
 const DEFAULT_USER_AGENT = "Amazon-Ebook-Scraper-Discord-Notifier/1.0.0";
 
 // Create HTTP client options
