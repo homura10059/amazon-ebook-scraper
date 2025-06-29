@@ -7,7 +7,16 @@ import {
   validateNotificationData,
   validateWebhookUrl,
 } from "./index";
-import type { DiscordNotifierConfig, NotificationData } from "./types";
+import type {
+  DiscordNotifierConfig,
+  NotificationData,
+  WebhookURL,
+} from "./types";
+
+// Mock response type for got library
+interface MockResponse {
+  statusCode: number;
+}
 
 // Mock got module
 vi.mock("got", () => ({
@@ -32,7 +41,7 @@ describe("Discord Notifier", () => {
   };
 
   const validConfig: DiscordNotifierConfig = {
-    webhookUrl: validWebhookUrl as any,
+    webhookUrl: validWebhookUrl as WebhookURL,
     options: {
       username: "Scraper Bot",
       timeout: 5000,
@@ -70,7 +79,7 @@ describe("Discord Notifier", () => {
     });
 
     it("should reject non-string values", () => {
-      const result = validateWebhookUrl(123 as any);
+      const result = validateWebhookUrl(123 as unknown as string);
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.type).toBe("validation_error");
@@ -125,7 +134,7 @@ describe("Discord Notifier", () => {
         ...validNotificationData,
         product: {
           ...validNotificationData.product,
-          timestamp: "invalid" as any,
+          timestamp: "invalid" as unknown as number,
         },
       };
       const result = validateNotificationData(invalidData);
@@ -179,7 +188,7 @@ describe("Discord Notifier", () => {
     it("should reject unsupported notification types", () => {
       const invalidData = {
         ...validNotificationData,
-        type: "unsupported" as any,
+        type: "unsupported" as unknown as "product_found",
       };
       const result = formatMessage(invalidData);
       expect(result.success).toBe(false);
@@ -240,7 +249,7 @@ describe("Discord Notifier", () => {
     it("should validate data and config before sending", async () => {
       // Mock successful HTTP response
       const { default: got } = await import("got");
-      vi.mocked(got).mockResolvedValueOnce({ statusCode: 204 } as any);
+      vi.mocked(got).mockResolvedValueOnce({ statusCode: 204 } as MockResponse);
 
       const result = await sendProductNotification(
         validNotificationData,
@@ -250,7 +259,7 @@ describe("Discord Notifier", () => {
     });
 
     it("should handle validation errors", async () => {
-      const invalidData = { type: "invalid" } as any;
+      const invalidData = { type: "invalid" } as unknown as NotificationData;
       const result = await sendProductNotification(invalidData, validConfig);
       expect(result.success).toBe(false);
       if (!result.success) {
@@ -263,7 +272,7 @@ describe("Discord Notifier", () => {
     it("should handle complete notification flow", async () => {
       // Mock successful HTTP response
       const { default: got } = await import("got");
-      vi.mocked(got).mockResolvedValueOnce({ statusCode: 204 } as any);
+      vi.mocked(got).mockResolvedValueOnce({ statusCode: 204 } as MockResponse);
 
       const notifierResult = createDiscordNotifier(validConfig);
       expect(notifierResult.success).toBe(true);

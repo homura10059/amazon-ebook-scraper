@@ -1,5 +1,6 @@
 import type {
   DiscordNotifierConfig,
+  DiscordOptions,
   NotificationData,
   NotificationError,
   Result,
@@ -81,7 +82,7 @@ export const validateNotificationData = (
     };
   }
 
-  const product = notificationData.product;
+  const product = notificationData.product as Record<string, unknown>;
 
   if (!product.title || typeof product.title !== "string") {
     return {
@@ -118,7 +119,15 @@ export const validateNotificationData = (
 
   return {
     success: true,
-    data: notificationData as NotificationData,
+    data: {
+      type: "product_found",
+      product: {
+        title: product.title as string,
+        price: product.price as string,
+        timestamp: product.timestamp as number,
+      },
+      metadata: notificationData.metadata as NotificationData["metadata"],
+    },
   };
 };
 
@@ -139,7 +148,7 @@ export const validateConfig = (
 
   const configData = config as Record<string, unknown>;
 
-  const webhookResult = validateWebhookUrl(configData.webhookUrl);
+  const webhookResult = validateWebhookUrl(configData.webhookUrl as string);
   if (!webhookResult.success) {
     return webhookResult;
   }
@@ -148,7 +157,7 @@ export const validateConfig = (
     success: true,
     data: {
       webhookUrl: webhookResult.data,
-      options: configData.options,
+      options: configData.options as DiscordOptions | undefined,
     },
   };
 };

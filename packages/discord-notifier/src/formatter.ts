@@ -111,10 +111,12 @@ const createProductEmbed = (
     },
   };
 
-  // Add optional metadata fields
+  // Add optional metadata fields functionally
+  let fields = embed.fields ?? [];
+
   if (metadata?.source) {
-    embed.fields = [
-      ...embed.fields,
+    fields = [
+      ...fields,
       {
         name: "🔗 ソース",
         value: truncateText(metadata.source),
@@ -124,8 +126,8 @@ const createProductEmbed = (
   }
 
   if (metadata?.url) {
-    embed.fields = [
-      ...embed.fields,
+    fields = [
+      ...fields,
       {
         name: "🌐 URL",
         value: truncateText(metadata.url),
@@ -135,8 +137,8 @@ const createProductEmbed = (
   }
 
   if (metadata?.description) {
-    embed.fields = [
-      ...embed.fields,
+    fields = [
+      ...fields,
       {
         name: "📝 説明",
         value: truncateText(metadata.description),
@@ -145,9 +147,15 @@ const createProductEmbed = (
     ];
   }
 
+  // Create final embed with updated fields
+  const finalEmbed: DiscordEmbed = {
+    ...embed,
+    fields,
+  };
+
   return {
     success: true,
-    data: embed,
+    data: finalEmbed,
   };
 };
 
