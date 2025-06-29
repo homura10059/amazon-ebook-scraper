@@ -1,0 +1,28 @@
+{
+  "name": "@amazon-ebook-scraper/discord-notifier",
+  "version": "1.0.0",
+  "description": "Discord notification functionality for Amazon ebook scraper",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome check src/",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "ts": "set -a && source .env && set +a && tsx"
+  },
+  "dependencies": {
+    "got": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsup": "^8.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.8.3",
+    "vitest": "^1.0.0"
+  },
+  "keywords": ["discord", "notification", "webhook", "scraper"]
+}
