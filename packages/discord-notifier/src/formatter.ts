@@ -1,3 +1,4 @@
+import { createFormattingError, createSuccess } from "./result-helpers";
 import type {
   DiscordEmbed,
   DiscordWebhookPayload,
@@ -29,32 +30,17 @@ const formatPrice = (
   price: string
 ): Result<FormattedPrice, NotificationError> => {
   if (!price || typeof price !== "string") {
-    return {
-      success: false,
-      error: {
-        type: "formatting_error",
-        message: "Price must be a non-empty string",
-      },
-    };
+    return createFormattingError("Price must be a non-empty string");
   }
 
   // Clean and format the price
   const cleanPrice = price.trim();
 
   if (cleanPrice.length === 0) {
-    return {
-      success: false,
-      error: {
-        type: "formatting_error",
-        message: "Price cannot be empty",
-      },
-    };
+    return createFormattingError("Price cannot be empty");
   }
 
-  return {
-    success: true,
-    data: cleanPrice as FormattedPrice,
-  };
+  return createSuccess(cleanPrice as FormattedPrice);
 };
 
 // Truncate text to Discord field value limit (1024 characters)
@@ -153,10 +139,7 @@ const createProductEmbed = (
     fields,
   };
 
-  return {
-    success: true,
-    data: finalEmbed,
-  };
+  return createSuccess(finalEmbed);
 };
 
 // Main formatting function - transforms NotificationData to Discord payload
@@ -164,13 +147,7 @@ export const formatMessage = (
   data: NotificationData
 ): Result<DiscordWebhookPayload, NotificationError> => {
   if (data.type !== "product_found") {
-    return {
-      success: false,
-      error: {
-        type: "formatting_error",
-        message: `Unsupported notification type: ${data.type}`,
-      },
-    };
+    return createFormattingError(`Unsupported notification type: ${data.type}`);
   }
 
   const embedResult = createProductEmbed(data);
@@ -182,10 +159,7 @@ export const formatMessage = (
     embeds: [embedResult.data],
   };
 
-  return {
-    success: true,
-    data: payload,
-  };
+  return createSuccess(payload);
 };
 
 // Create simple text message (alternative format)
@@ -193,13 +167,7 @@ export const formatSimpleMessage = (
   data: NotificationData
 ): Result<DiscordWebhookPayload, NotificationError> => {
   if (data.type !== "product_found") {
-    return {
-      success: false,
-      error: {
-        type: "formatting_error",
-        message: `Unsupported notification type: ${data.type}`,
-      },
-    };
+    return createFormattingError(`Unsupported notification type: ${data.type}`);
   }
 
   const { product } = data;
@@ -218,8 +186,5 @@ export const formatSimpleMessage = (
     content: truncateText(content, 2000), // Discord message content limit
   };
 
-  return {
-    success: true,
-    data: payload,
-  };
+  return createSuccess(payload);
 };

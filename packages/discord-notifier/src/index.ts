@@ -41,8 +41,19 @@ export {
   sendBatchNotifications,
 } from "./notifier";
 
+// Re-export helper functions
+export {
+  createSuccess,
+  createValidationError,
+  createFormattingError,
+  createNetworkError,
+  createDiscordError,
+  createError,
+} from "./result-helpers";
+
 import { formatMessage } from "./formatter";
 import { sendDiscordNotification } from "./notifier";
+import { createSuccess } from "./result-helpers";
 // Main high-level API
 import type {
   DiscordNotifierConfig,
@@ -98,10 +109,7 @@ export const createDiscordNotifier = (
     getConfig: () => validatedConfig,
   };
 
-  return {
-    success: true,
-    data: notifier,
-  };
+  return createSuccess(notifier);
 };
 
 // Convenience function for one-off notifications

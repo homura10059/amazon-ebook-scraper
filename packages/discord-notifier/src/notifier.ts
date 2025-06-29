@@ -1,4 +1,9 @@
 import got, { type OptionsOfJSONResponseBody } from "got";
+import {
+  createDiscordError,
+  createError,
+  createSuccess,
+} from "./result-helpers";
 import type {
   DiscordNotifierConfig,
   DiscordWebhookPayload,
@@ -77,10 +82,7 @@ const createHttpOptions = (
     options.json = payloadWithAvatar;
   }
 
-  return {
-    success: true,
-    data: options,
-  };
+  return createSuccess(options);
 };
 
 // Parse HTTP error response
@@ -150,25 +152,15 @@ export const sendDiscordNotification = async (
 
     // Discord webhooks return 204 No Content on success
     if (response.statusCode === 204) {
-      return {
-        success: true,
-        data: undefined,
-      };
+      return createSuccess(undefined);
     }
 
     // Unexpected status code
-    return {
-      success: false,
-      error: {
-        type: "discord_error",
-        message: `Unexpected response status: ${response.statusCode}`,
-      },
-    };
+    return createDiscordError(
+      `Unexpected response status: ${response.statusCode}`
+    );
   } catch (error) {
-    return {
-      success: false,
-      error: parseErrorResponse(error),
-    };
+    return createError(parseErrorResponse(error));
   }
 };
 
