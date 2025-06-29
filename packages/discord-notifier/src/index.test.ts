@@ -29,11 +29,13 @@ describe("Discord Notifier", () => {
 
   const validNotificationData: NotificationData = {
     type: "product_found",
-    product: {
-      title: "Test Book",
-      price: "¥1,000",
-      timestamp: 1640995200, // 2022-01-01 00:00:00 UTC
-    },
+    product: [
+      {
+        title: "Test Book",
+        price: "¥1,000",
+        timestamp: 1640995200, // 2022-01-01 00:00:00 UTC
+      },
+    ],
     metadata: {
       source: "Amazon",
       url: "https://amazon.co.jp/test",
@@ -93,7 +95,8 @@ describe("Discord Notifier", () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.data.type).toBe("product_found");
-        expect(result.data.product.title).toBe("Test Book");
+        expect(result.data.product).toHaveLength(1);
+        expect(result.data.product[0].title).toBe("Test Book");
       }
     });
 
@@ -120,27 +123,76 @@ describe("Discord Notifier", () => {
     it("should reject invalid product title", () => {
       const invalidData = {
         ...validNotificationData,
-        product: { ...validNotificationData.product, title: "" },
+        product: [{ ...validNotificationData.product[0], title: "" }],
       };
       const result = validateNotificationData(invalidData);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.field).toBe("product.title");
+        expect(result.error.field).toBe("product[0].title");
       }
     });
 
     it("should reject invalid timestamp", () => {
       const invalidData = {
         ...validNotificationData,
-        product: {
-          ...validNotificationData.product,
-          timestamp: "invalid" as unknown as number,
-        },
+        product: [
+          {
+            ...validNotificationData.product[0],
+            timestamp: "invalid" as unknown as number,
+          },
+        ],
       };
       const result = validateNotificationData(invalidData);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.field).toBe("product.timestamp");
+        expect(result.error.field).toBe("product[0].timestamp");
+      }
+    });
+
+    it("should reject non-array product data", () => {
+      const invalidData = {
+        ...validNotificationData,
+        product: validNotificationData.product[0], // Single object instead of array
+      };
+      const result = validateNotificationData(invalidData);
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.type).toBe("validation_error");
+        expect(result.error.message).toBe("Product data must be an array");
+      }
+    });
+
+    it("should reject empty product array", () => {
+      const invalidData = {
+        ...validNotificationData,
+        product: [],
+      };
+      const result = validateNotificationData(invalidData);
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.type).toBe("validation_error");
+        expect(result.error.message).toBe("Product array cannot be empty");
+      }
+    });
+
+    it("should accept multiple products", () => {
+      const multiProductData = {
+        ...validNotificationData,
+        product: [
+          validNotificationData.product[0],
+          {
+            title: "Another Book",
+            price: "¥2,000",
+            timestamp: 1640995300,
+          },
+        ],
+      };
+      const result = validateNotificationData(multiProductData);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.product).toHaveLength(2);
+        expect(result.data.product[0].title).toBe("Test Book");
+        expect(result.data.product[1].title).toBe("Another Book");
       }
     });
   });
@@ -194,6 +246,43 @@ describe("Discord Notifier", () => {
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.type).toBe("formatting_error");
+      }
+    });
+
+    it("should format multiple products into multiple Discord embeds", () => {
+      const multiProductData = {
+        ...validNotificationData,
+        product: [
+          validNotificationData.product[0],
+          {
+            title: "Another Book",
+            price: "¥2,000",
+            timestamp: 1640995300,
+          },
+        ],
+      };
+      const result = formatMessage(multiProductData);
+      expect(result.success).toBe(true);
+
+      if (result.success) {
+        expect(result.data.embeds).toBeDefined();
+        expect(result.data.embeds).toHaveLength(2);
+
+        // Check first embed
+        const firstEmbed = result.data.embeds?.[0];
+        expect(firstEmbed.title).toContain("新しい商品が見つかりました #1");
+        const firstTitleField = firstEmbed.fields?.find((f) =>
+          f.name.includes("商品名")
+        );
+        expect(firstTitleField?.value).toBe("Test Book");
+
+        // Check second embed
+        const secondEmbed = result.data.embeds?.[1];
+        expect(secondEmbed.title).toContain("新しい商品が見つかりました #2");
+        const secondTitleField = secondEmbed.fields?.find((f) =>
+          f.name.includes("商品名")
+        );
+        expect(secondTitleField?.value).toBe("Another Book");
       }
     });
   });

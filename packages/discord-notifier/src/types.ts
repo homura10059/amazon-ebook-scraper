@@ -19,7 +19,7 @@ export interface ScrapedProduct {
 // Notification data structure
 export interface NotificationData {
   readonly type: "product_found";
-  readonly product: ScrapedProduct;
+  readonly product: ScrapedProduct[];
   readonly metadata?: NotificationMetadata;
 }
 

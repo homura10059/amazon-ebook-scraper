@@ -1,4 +1,3 @@
-import { createSuccess, createValidationError } from "./result-helpers";
 import type {
   DiscordNotifierConfig,
   DiscordOptions,
@@ -17,20 +16,31 @@ export const validateWebhookUrl = (
   url: string
 ): Result<WebhookURL, NotificationError> => {
   if (!url || typeof url !== "string") {
-    return createValidationError(
-      "Webhook URL is required and must be a string",
-      "webhookUrl"
-    );
+    return {
+      success: false,
+      error: {
+        type: "validation_error",
+        message: "Webhook URL is required and must be a string",
+        field: "webhookUrl",
+      },
+    };
   }
 
   if (!DISCORD_WEBHOOK_PATTERN.test(url)) {
-    return createValidationError(
-      "Invalid Discord webhook URL format",
-      "webhookUrl"
-    );
+    return {
+      success: false,
+      error: {
+        type: "validation_error",
+        message: "Invalid Discord webhook URL format",
+        field: "webhookUrl",
+      },
+    };
   }
 
-  return createSuccess(url as WebhookURL);
+  return {
+    success: true,
+    data: url as WebhookURL,
+  };
 };
 
 // Validate notification data
@@ -38,54 +48,125 @@ export const validateNotificationData = (
   data: unknown
 ): Result<NotificationData, NotificationError> => {
   if (!data || typeof data !== "object") {
-    return createValidationError("Notification data must be an object", "data");
+    return {
+      success: false,
+      error: {
+        type: "validation_error",
+        message: "Notification data must be an object",
+        field: "data",
+      },
+    };
   }
 
   const notificationData = data as Record<string, unknown>;
 
   if (notificationData.type !== "product_found") {
-    return createValidationError(
-      'Notification type must be "product_found"',
-      "type"
-    );
+    return {
+      success: false,
+      error: {
+        type: "validation_error",
+        message: 'Notification type must be "product_found"',
+        field: "type",
+      },
+    };
   }
 
   if (!notificationData.product) {
-    return createValidationError("Product data is required", "product");
+    return {
+      success: false,
+      error: {
+        type: "validation_error",
+        message: "Product data is required",
+        field: "product",
+      },
+    };
   }
 
-  const product = notificationData.product as Record<string, unknown>;
-
-  if (!product.title || typeof product.title !== "string") {
-    return createValidationError(
-      "Product title is required and must be a string",
-      "product.title"
-    );
+  if (!Array.isArray(notificationData.product)) {
+    return {
+      success: false,
+      error: {
+        type: "validation_error",
+        message: "Product data must be an array",
+        field: "product",
+      },
+    };
   }
 
-  if (!product.price || typeof product.price !== "string") {
-    return createValidationError(
-      "Product price is required and must be a string",
-      "product.price"
-    );
+  if (notificationData.product.length === 0) {
+    return {
+      success: false,
+      error: {
+        type: "validation_error",
+        message: "Product array cannot be empty",
+        field: "product",
+      },
+    };
   }
 
-  if (typeof product.timestamp !== "number") {
-    return createValidationError(
-      "Product timestamp is required and must be a number",
-      "product.timestamp"
-    );
+  const products = notificationData.product as Record<string, unknown>[];
+
+  // Validate each product in the array
+  for (let i = 0; i < products.length; i++) {
+    const product = products[i];
+
+    if (!product || typeof product !== "object") {
+      return {
+        success: false,
+        error: {
+          type: "validation_error",
+          message: `Product at index ${i} must be an object`,
+          field: `product[${i}]`,
+        },
+      };
+    }
+
+    if (!product.title || typeof product.title !== "string") {
+      return {
+        success: false,
+        error: {
+          type: "validation_error",
+          message: `Product title at index ${i} is required and must be a string`,
+          field: `product[${i}].title`,
+        },
+      };
+    }
+
+    if (!product.price || typeof product.price !== "string") {
+      return {
+        success: false,
+        error: {
+          type: "validation_error",
+          message: `Product price at index ${i} is required and must be a string`,
+          field: `product[${i}].price`,
+        },
+      };
+    }
+
+    if (typeof product.timestamp !== "number") {
+      return {
+        success: false,
+        error: {
+          type: "validation_error",
+          message: `Product timestamp at index ${i} is required and must be a number`,
+          field: `product[${i}].timestamp`,
+        },
+      };
+    }
   }
 
-  return createSuccess({
-    type: "product_found",
-    product: {
-      title: product.title as string,
-      price: product.price as string,
-      timestamp: product.timestamp as number,
+  return {
+    success: true,
+    data: {
+      type: "product_found",
+      product: products.map((product) => ({
+        title: product.title as string,
+        price: product.price as string,
+        timestamp: product.timestamp as number,
+      })),
+      metadata: notificationData.metadata as NotificationData["metadata"],
     },
-    metadata: notificationData.metadata as NotificationData["metadata"],
-  });
+  };
 };
 
 // Validate Discord notifier configuration
@@ -93,7 +174,14 @@ export const validateConfig = (
   config: unknown
 ): Result<DiscordNotifierConfig, NotificationError> => {
   if (!config || typeof config !== "object") {
-    return createValidationError("Configuration must be an object", "config");
+    return {
+      success: false,
+      error: {
+        type: "validation_error",
+        message: "Configuration must be an object",
+        field: "config",
+      },
+    };
   }
 
   const configData = config as Record<string, unknown>;
@@ -103,10 +191,13 @@ export const validateConfig = (
     return webhookResult;
   }
 
-  return createSuccess({
-    webhookUrl: webhookResult.data,
-    options: configData.options as DiscordOptions | undefined,
-  });
+  return {
+    success: true,
+    data: {
+      webhookUrl: webhookResult.data,
+      options: configData.options as DiscordOptions | undefined,
+    },
+  };
 };
 
 // Validate timeout value
@@ -114,23 +205,41 @@ export const validateTimeout = (
   timeout: unknown
 ): Result<number, NotificationError> => {
   if (timeout === undefined || timeout === null) {
-    return createSuccess(5000); // Default 5 seconds
+    return { success: true, data: 5000 }; // Default 5 seconds
   }
 
   if (typeof timeout !== "number") {
-    return createValidationError("Timeout must be a number", "timeout");
+    return {
+      success: false,
+      error: {
+        type: "validation_error",
+        message: "Timeout must be a number",
+        field: "timeout",
+      },
+    };
   }
 
   if (timeout <= 0) {
-    return createValidationError("Timeout must be greater than 0", "timeout");
+    return {
+      success: false,
+      error: {
+        type: "validation_error",
+        message: "Timeout must be greater than 0",
+        field: "timeout",
+      },
+    };
   }
 
   if (timeout > 30000) {
-    return createValidationError(
-      "Timeout must be less than or equal to 30000ms",
-      "timeout"
-    );
+    return {
+      success: false,
+      error: {
+        type: "validation_error",
+        message: "Timeout must be less than or equal to 30000ms",
+        field: "timeout",
+      },
+    };
   }
 
-  return createSuccess(timeout);
+  return { success: true, data: timeout };
 };

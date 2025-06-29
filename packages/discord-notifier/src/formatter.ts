@@ -1,4 +1,3 @@
-import { createFormattingError, createSuccess } from "./result-helpers";
 import type {
   DiscordEmbed,
   DiscordWebhookPayload,
@@ -30,17 +29,32 @@ const formatPrice = (
   price: string
 ): Result<FormattedPrice, NotificationError> => {
   if (!price || typeof price !== "string") {
-    return createFormattingError("Price must be a non-empty string");
+    return {
+      success: false,
+      error: {
+        type: "formatting_error",
+        message: "Price must be a non-empty string",
+      },
+    };
   }
 
   // Clean and format the price
   const cleanPrice = price.trim();
 
   if (cleanPrice.length === 0) {
-    return createFormattingError("Price cannot be empty");
+    return {
+      success: false,
+      error: {
+        type: "formatting_error",
+        message: "Price cannot be empty",
+      },
+    };
   }
 
-  return createSuccess(cleanPrice as FormattedPrice);
+  return {
+    success: true,
+    data: cleanPrice as FormattedPrice,
+  };
 };
 
 // Truncate text to Discord field value limit (1024 characters)
@@ -55,12 +69,12 @@ const formatTitle = (title: string): string => {
   return truncateText(cleanTitle, 256); // Discord embed title limit
 };
 
-// Create Discord embed for product notification
-const createProductEmbed = (
-  data: NotificationData
+// Create Discord embed for a single product
+const createSingleProductEmbed = (
+  product: import("./types").ScrapedProduct,
+  metadata?: import("./types").NotificationMetadata,
+  index?: number
 ): Result<DiscordEmbed, NotificationError> => {
-  const { product, metadata } = data;
-
   const priceResult = formatPrice(product.price);
   if (!priceResult.success) {
     return priceResult;
@@ -70,7 +84,10 @@ const createProductEmbed = (
   const timestamp = formatTimestamp(product.timestamp);
 
   const embed: DiscordEmbed = {
-    title: "🛒 新しい商品が見つかりました",
+    title:
+      index !== undefined
+        ? `🛒 新しい商品が見つかりました #${index + 1}`
+        : "🛒 新しい商品が見つかりました",
     color: DISCORD_COLORS.INFO,
     timestamp,
     fields: [
@@ -139,7 +156,36 @@ const createProductEmbed = (
     fields,
   };
 
-  return createSuccess(finalEmbed);
+  return {
+    success: true,
+    data: finalEmbed,
+  };
+};
+
+// Create Discord embeds for multiple products
+const createProductEmbeds = (
+  data: NotificationData
+): Result<DiscordEmbed[], NotificationError> => {
+  const { product: products, metadata } = data;
+
+  const embeds: DiscordEmbed[] = [];
+
+  for (let i = 0; i < products.length; i++) {
+    const embedResult = createSingleProductEmbed(
+      products[i],
+      metadata,
+      products.length > 1 ? i : undefined
+    );
+    if (!embedResult.success) {
+      return embedResult;
+    }
+    embeds.push(embedResult.data);
+  }
+
+  return {
+    success: true,
+    data: embeds,
+  };
 };
 
 // Main formatting function - transforms NotificationData to Discord payload
@@ -147,19 +193,28 @@ export const formatMessage = (
   data: NotificationData
 ): Result<DiscordWebhookPayload, NotificationError> => {
   if (data.type !== "product_found") {
-    return createFormattingError(`Unsupported notification type: ${data.type}`);
+    return {
+      success: false,
+      error: {
+        type: "formatting_error",
+        message: `Unsupported notification type: ${data.type}`,
+      },
+    };
   }
 
-  const embedResult = createProductEmbed(data);
-  if (!embedResult.success) {
-    return embedResult;
+  const embedsResult = createProductEmbeds(data);
+  if (!embedsResult.success) {
+    return embedsResult;
   }
 
   const payload: DiscordWebhookPayload = {
-    embeds: [embedResult.data],
+    embeds: embedsResult.data,
   };
 
-  return createSuccess(payload);
+  return {
+    success: true,
+    data: payload,
+  };
 };
 
 // Create simple text message (alternative format)
@@ -167,24 +222,46 @@ export const formatSimpleMessage = (
   data: NotificationData
 ): Result<DiscordWebhookPayload, NotificationError> => {
   if (data.type !== "product_found") {
-    return createFormattingError(`Unsupported notification type: ${data.type}`);
+    return {
+      success: false,
+      error: {
+        type: "formatting_error",
+        message: `Unsupported notification type: ${data.type}`,
+      },
+    };
   }
 
-  const { product } = data;
-  const priceResult = formatPrice(product.price);
+  const { product: products } = data;
 
-  if (!priceResult.success) {
-    return priceResult;
+  const productMessages: string[] = [];
+
+  for (let i = 0; i < products.length; i++) {
+    const product = products[i];
+    const priceResult = formatPrice(product.price);
+
+    if (!priceResult.success) {
+      return priceResult;
+    }
+
+    const formattedTitle = formatTitle(product.title);
+    const timestamp = formatTimestamp(product.timestamp);
+
+    const productMessage =
+      products.length > 1
+        ? `🛒 **新しい商品 #${i + 1}**: ${formattedTitle}\n💰 **価格**: ${priceResult.data}\n🕒 **時刻**: ${timestamp}`
+        : `🛒 **新しい商品**: ${formattedTitle}\n💰 **価格**: ${priceResult.data}\n🕒 **時刻**: ${timestamp}`;
+
+    productMessages.push(productMessage);
   }
 
-  const formattedTitle = formatTitle(product.title);
-  const timestamp = formatTimestamp(product.timestamp);
-
-  const content = `🛒 **新しい商品**: ${formattedTitle}\n💰 **価格**: ${priceResult.data}\n🕒 **時刻**: ${timestamp}`;
+  const content = productMessages.join("\n\n");
 
   const payload: DiscordWebhookPayload = {
     content: truncateText(content, 2000), // Discord message content limit
   };
 
-  return createSuccess(payload);
+  return {
+    success: true,
+    data: payload,
+  };
 };
