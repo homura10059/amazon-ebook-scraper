@@ -1,0 +1,43 @@
+{
+  "name": "@amazon-ebook-scraper/scraper-notifier",
+  "version": "1.0.0",
+  "description": "CLI application for scraping Amazon ebooks and sending Discord notifications",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "scraper-notifier": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "lint": "biome check src",
+    "lint:fix": "biome check --apply src",
+    "format": "biome format --write src",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@amazon-ebook-scraper/scraper": "workspace:*",
+    "@amazon-ebook-scraper/discord-notifier": "workspace:*",
+    "commander": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "keywords": [
+    "amazon",
+    "scraper",
+    "ebook",
+    "discord",
+    "notification",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT"
+}
