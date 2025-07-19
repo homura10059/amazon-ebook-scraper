@@ -39,7 +39,11 @@ const DEFAULT_PIPELINE_OPTIONS: Required<PipelineOptions> = {
 
 // Functional helper: Convert scraper error to pipeline error
 const convertScraperError = (error: unknown, url: string): PipelineError => {
-  const scraperError = error as any;
+  const scraperError = error as Error & {
+    url?: string;
+    status?: number;
+    message?: string;
+  };
   return {
     type: "scraper_error",
     message: scraperError.message || "Unknown scraper error",

@@ -222,7 +222,7 @@ const batchCommand = async (
       })),
     });
   } else {
-    printInfo(`Batch processing complete:`);
+    printInfo("Batch processing complete:");
     console.log(`  Total: ${result.summary.total}`);
     console.log(`  Successful: ${result.summary.successful}`);
     console.log(`  Failed: ${result.summary.failed}`);

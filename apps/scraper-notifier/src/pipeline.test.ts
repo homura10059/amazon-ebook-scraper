@@ -1,3 +1,4 @@
+import type { WebhookURL } from "@amazon-ebook-scraper/discord-notifier";
 import type { ScrapedProduct } from "@amazon-ebook-scraper/scraper";
 import { describe, expect, it, vi } from "vitest";
 import type { CLIConfig } from "./config";
@@ -15,7 +16,8 @@ vi.mock("@amazon-ebook-scraper/discord-notifier", () => ({
 describe("Pipeline", () => {
   const mockConfig: CLIConfig = {
     discord: {
-      webhookUrl: "https://discord.com/api/webhooks/123456789/abcdefgh" as any,
+      webhookUrl:
+        "https://discord.com/api/webhooks/123456789/abcdefgh" as WebhookURL,
       options: {
         timeout: 10000,
         allowMentions: false,
