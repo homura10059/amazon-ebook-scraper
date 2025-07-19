@@ -1,5 +1,3 @@
-import type { ScrapedProduct, ScraperOptions } from "@amazon-ebook-scraper/scraper";
-import { scrapeAmazonProduct } from "@amazon-ebook-scraper/scraper";
 import type {
   DiscordNotifierConfig,
   NotificationData,
@@ -7,6 +5,11 @@ import type {
   Result,
 } from "@amazon-ebook-scraper/discord-notifier";
 import { createDiscordNotifier } from "@amazon-ebook-scraper/discord-notifier";
+import type {
+  ScrapedProduct,
+  ScraperOptions,
+} from "@amazon-ebook-scraper/scraper";
+import { scrapeAmazonProduct } from "@amazon-ebook-scraper/scraper";
 import type { CLIConfig } from "./config";
 
 // Pipeline result types
@@ -114,12 +117,18 @@ const sendNotification = async (
 ): Promise<Result<void, PipelineError>> => {
   const notifierResult = createDiscordNotifier(config);
   if (!notifierResult.success) {
-    return { success: false, error: convertNotificationError(notifierResult.error) };
+    return {
+      success: false,
+      error: convertNotificationError(notifierResult.error),
+    };
   }
 
   const sendResult = await notifierResult.data.sendProductNotification(data);
   if (!sendResult.success) {
-    return { success: false, error: convertNotificationError(sendResult.error) };
+    return {
+      success: false,
+      error: convertNotificationError(sendResult.error),
+    };
   }
 
   return { success: true, data: undefined };
@@ -155,13 +164,13 @@ export const runScrapingPipeline = async (
           ...opts.metadata,
         },
       };
-      
+
       // Send error notification (fire and forget)
       sendNotification(errorData, config.discord).catch(() => {
         // Ignore notification errors for error notifications
       });
     }
-    
+
     return scrapeResult;
   }
 
@@ -173,10 +182,16 @@ export const runScrapingPipeline = async (
       opts.metadata
     );
 
-    const notifyResult = await sendNotification(notificationData, config.discord);
+    const notifyResult = await sendNotification(
+      notificationData,
+      config.discord
+    );
     if (!notifyResult.success) {
       // Return the scraped product but log that notification failed
-      console.warn("Product scraped successfully but notification failed:", notifyResult.error);
+      console.warn(
+        "Product scraped successfully but notification failed:",
+        notifyResult.error
+      );
     }
   }
 
@@ -203,9 +218,9 @@ export const runBatchScrapingPipeline = async (
     try {
       const result = await runScrapingPipeline(url, config, options);
       results.push(result);
-      
+
       // Add delay between requests
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (error) {
       results.push({
         success: false,
@@ -219,7 +234,7 @@ export const runBatchScrapingPipeline = async (
   }
 
   // Calculate summary
-  const successful = results.filter(r => r.success).length;
+  const successful = results.filter((r) => r.success).length;
   const failed = results.length - successful;
 
   return {
@@ -238,12 +253,18 @@ export const testDiscordConnection = async (
 ): Promise<Result<void, PipelineError>> => {
   const notifierResult = createDiscordNotifier(config.discord);
   if (!notifierResult.success) {
-    return { success: false, error: convertNotificationError(notifierResult.error) };
+    return {
+      success: false,
+      error: convertNotificationError(notifierResult.error),
+    };
   }
 
   const testResult = await notifierResult.data.testConnection();
   if (!testResult.success) {
-    return { success: false, error: convertNotificationError(testResult.error) };
+    return {
+      success: false,
+      error: convertNotificationError(testResult.error),
+    };
   }
 
   return { success: true, data: undefined };

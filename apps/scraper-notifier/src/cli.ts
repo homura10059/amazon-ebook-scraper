@@ -3,7 +3,11 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { program } from "commander";
 import type { CLIConfig } from "./config";
-import { createExampleConfig, findDefaultConfigFile, loadConfig } from "./config";
+import {
+  createExampleConfig,
+  findDefaultConfigFile,
+  loadConfig,
+} from "./config";
 import {
   formatPipelineError,
   runBatchScrapingPipeline,
@@ -45,13 +49,17 @@ const printJson = (data: unknown): void => {
 const loadConfigWithErrorHandling = (configPath?: string): CLIConfig | null => {
   // Try to find default config if none specified
   const finalConfigPath = configPath || findDefaultConfigFile();
-  
+
   if (finalConfigPath) {
     printInfo(`Loading configuration from: ${finalConfigPath}`);
   } else if (!process.env.DISCORD_WEBHOOK_URL) {
     printError("No configuration file found and DISCORD_WEBHOOK_URL not set");
-    printInfo("Use --config to specify a config file or set DISCORD_WEBHOOK_URL environment variable");
-    printInfo("Run 'scraper-notifier init' to create an example configuration file");
+    printInfo(
+      "Use --config to specify a config file or set DISCORD_WEBHOOK_URL environment variable"
+    );
+    printInfo(
+      "Run 'scraper-notifier init' to create an example configuration file"
+    );
     return null;
   }
 
@@ -68,14 +76,18 @@ const loadConfigWithErrorHandling = (configPath?: string): CLIConfig | null => {
 };
 
 // Command: Initialize configuration file
-const initCommand = (filePath: string = "./scraper-notifier.json"): void => {
+const initCommand = (filePath = "./scraper-notifier.json"): void => {
   try {
     const exampleConfig = createExampleConfig();
     writeFileSync(filePath, exampleConfig);
     printSuccess(`Configuration file created: ${filePath}`);
-    printInfo("Edit the file to set your Discord webhook URL and customize settings");
+    printInfo(
+      "Edit the file to set your Discord webhook URL and customize settings"
+    );
   } catch (error) {
-    printError(`Failed to create configuration file: ${(error as Error).message}`);
+    printError(
+      `Failed to create configuration file: ${(error as Error).message}`
+    );
     process.exit(1);
   }
 };
@@ -135,8 +147,10 @@ const scrapeCommand = async (
       printSuccess("Product scraped successfully!");
       console.log(`Title: ${result.data.title}`);
       console.log(`Price: ${result.data.price}`);
-      console.log(`Timestamp: ${new Date(result.data.timestamp * 1000).toISOString()}`);
-      
+      console.log(
+        `Timestamp: ${new Date(result.data.timestamp * 1000).toISOString()}`
+      );
+
       if (!options["no-notify"]) {
         printInfo("Discord notification sent");
       }
@@ -228,7 +242,9 @@ const batchCommand = async (
 export const configureCLI = (): typeof program => {
   program
     .name("scraper-notifier")
-    .description("CLI tool for scraping Amazon ebooks and sending Discord notifications")
+    .description(
+      "CLI tool for scraping Amazon ebooks and sending Discord notifications"
+    )
     .version(packageJson.version);
 
   // Global options
@@ -257,7 +273,10 @@ export const configureCLI = (): typeof program => {
     .argument("<url>", "Amazon ebook URL to scrape")
     .option("--no-notify", "Don't send Discord notification")
     .option("--notify-errors", "Send Discord notification on errors")
-    .option("-d, --description <text>", "Custom description for the notification")
+    .option(
+      "-d, --description <text>",
+      "Custom description for the notification"
+    )
     .option("--json", "Output result as JSON")
     .action(scrapeCommand);
 

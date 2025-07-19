@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from "vitest";
 import type { ScrapedProduct } from "@amazon-ebook-scraper/scraper";
+import { describe, expect, it, vi } from "vitest";
 import type { CLIConfig } from "./config";
 import { formatPipelineError, runScrapingPipeline } from "./pipeline";
 

@@ -15,8 +15,7 @@
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
     "lint": "biome check src",
-    "lint:fix": "biome check --apply src",
-    "format": "biome format --write src",
+    "lint:fix": "biome check --apply src && biome format --write src",
     "clean": "rm -rf dist"
   },
   "dependencies": {
@@ -30,14 +29,7 @@
     "typescript": "^5.0.0",
     "vitest": "^1.0.0"
   },
-  "keywords": [
-    "amazon",
-    "scraper",
-    "ebook",
-    "discord",
-    "notification",
-    "cli"
-  ],
+  "keywords": ["amazon", "scraper", "ebook", "discord", "notification", "cli"],
   "author": "",
   "license": "MIT"
 }

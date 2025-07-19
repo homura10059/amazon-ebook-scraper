@@ -80,25 +80,34 @@ const createConfigError = (error: ConfigError): NotificationError => {
 };
 
 // Functional helper: Load and parse JSON configuration file
-const loadConfigFile = (configPath: string): Result<ConfigFile, ConfigError> => {
+const loadConfigFile = (
+  configPath: string
+): Result<ConfigFile, ConfigError> => {
   try {
     const content = readFileSync(configPath, "utf8");
     const parsed = JSON.parse(content) as unknown;
-    
+
     // Basic validation of config structure
     if (typeof parsed !== "object" || parsed === null) {
       return {
         success: false,
-        error: { type: "validation_error", field: "root", message: "Configuration must be an object" },
+        error: {
+          type: "validation_error",
+          field: "root",
+          message: "Configuration must be an object",
+        },
       };
     }
-    
+
     return { success: true, data: parsed as ConfigFile };
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      return { success: false, error: { type: "file_not_found", path: configPath } };
+      return {
+        success: false,
+        error: { type: "file_not_found", path: configPath },
+      };
     }
-    
+
     return {
       success: false,
       error: { type: "invalid_json", message: (error as Error).message },
@@ -107,7 +116,9 @@ const loadConfigFile = (configPath: string): Result<ConfigFile, ConfigError> => 
 };
 
 // Functional helper: Get webhook URL from environment or config
-const getWebhookUrl = (configFile?: ConfigFile): Result<WebhookURL, ConfigError> => {
+const getWebhookUrl = (
+  configFile?: ConfigFile
+): Result<WebhookURL, ConfigError> => {
   // Try environment variable first
   const envWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
   if (envWebhookUrl) {
@@ -166,7 +177,9 @@ const createScraperConfig = (configFile?: ConfigFile) => ({
 });
 
 // Main configuration loading function
-export const loadConfig = (configPath?: string): Result<CLIConfig, NotificationError> => {
+export const loadConfig = (
+  configPath?: string
+): Result<CLIConfig, NotificationError> => {
   // Load configuration file if path provided
   let configFile: ConfigFile | undefined;
   if (configPath) {
@@ -214,19 +227,22 @@ export const findDefaultConfigFile = (): string | null => {
 };
 
 // Create example configuration file content
-export const createExampleConfig = (): string => JSON.stringify(
-  {
-    discord: {
-      webhookUrl: "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN",
-      username: "Amazon Ebook Notifier",
-      timeout: 10000,
+export const createExampleConfig = (): string =>
+  JSON.stringify(
+    {
+      discord: {
+        webhookUrl:
+          "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN",
+        username: "Amazon Ebook Notifier",
+        timeout: 10000,
+      },
+      scraper: {
+        timeout: 10000,
+        retries: 3,
+        userAgent:
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      },
     },
-    scraper: {
-      timeout: 10000,
-      retries: 3,
-      userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-    },
-  },
-  null,
-  2
-);
+    null,
+    2
+  );
