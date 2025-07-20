@@ -10,6 +10,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "biome check src/",
+    "lint:fix": "biome check --write src && biome format --write src",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist",
     "ts": "set -a && source .env && set +a && tsx"
@@ -25,5 +26,9 @@
     "typescript": "^5.8.3",
     "vitest": "^1.0.0"
   },
-  "keywords": ["scraper", "amazon", "ebook"]
+  "keywords": [
+    "scraper",
+    "amazon",
+    "ebook"
+  ]
 }

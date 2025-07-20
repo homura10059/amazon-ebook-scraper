@@ -15,14 +15,13 @@
     "build": "pnpm -r run build",
     "test": "pnpm -r run test",
     "lint": "pnpm -r run lint",
+    "lint:fix": "pnpm -r run lint:fix",
     "typecheck": "pnpm -r run typecheck",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
-    "check": "biome check .",
-    "check:fix": "biome check --fix .",
     "clean": "pnpm -r run clean",
     "install:all": "pnpm install",
-    "update:all": "pnpm update"
+    "update:all": "pnpm update",
+    "pre-commit": "pnpm lint:fix && pnpm typecheck",
+    "pre-push": "pnpm pre-commit && pnpm build && pnpm test"
   },
   "engines": {
     "node": ">=22.0.0",
