@@ -164,7 +164,7 @@ export const runScrapingPipeline = async (
         metadata: {
           source: "CLI",
           url: urlResult.data,
-          description: `Scraping failed: ${scrapeResult.error.message}`,
+          description: formatPipelineError(scrapeResult.error),
           ...opts.metadata,
         },
       };

@@ -66,7 +66,10 @@ const loadConfigWithErrorHandling = (configPath?: string): CLIConfig | null => {
   const configResult = loadConfig(finalConfigPath || undefined);
   if (!configResult.success) {
     printError(`Configuration error: ${configResult.error.message}`);
-    if (configResult.error.field) {
+    if (
+      configResult.error.type === "validation_error" &&
+      configResult.error.field
+    ) {
       printInfo(`Field: ${configResult.error.field}`);
     }
     return null;
