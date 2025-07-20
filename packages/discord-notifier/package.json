@@ -10,7 +10,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "biome check src",
-    "lint:fix": "biome check --apply src && biome format --write src",
+    "lint:fix": "biome check --write src && biome format --write src",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist",
     "ts": "set -a && source .env && set +a && tsx"

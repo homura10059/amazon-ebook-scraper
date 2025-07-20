@@ -15,7 +15,7 @@
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
     "lint": "biome check src",
-    "lint:fix": "biome check --apply src && biome format --write src",
+    "lint:fix": "biome check --write src && biome format --write src",
     "clean": "rm -rf dist"
   },
   "dependencies": {
