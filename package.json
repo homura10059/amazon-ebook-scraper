@@ -19,7 +19,9 @@
     "typecheck": "pnpm -r run typecheck",
     "clean": "pnpm -r run clean",
     "install:all": "pnpm install",
-    "update:all": "pnpm update"
+    "update:all": "pnpm update",
+    "pre-commit": "pnpm lint:fix",
+    "pre-push": "pnpm pre-commit"
   },
   "engines": {
     "node": ">=22.0.0",

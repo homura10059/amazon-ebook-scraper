@@ -19,7 +19,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "pnpm lint:fix && pnpm typecheck && pnpm test && pnpm build"
+            "command": "pnpm pre-commit"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm pre-push"
           }
         ]
       }
