@@ -33,7 +33,7 @@ describe("Configuration Management", () => {
       if (originalEnv) {
         process.env.DISCORD_WEBHOOK_URL = originalEnv;
       } else {
-        process.env.DISCORD_WEBHOOK_URL = undefined;
+        delete process.env.DISCORD_WEBHOOK_URL;
       }
     });
 
@@ -52,13 +52,13 @@ describe("Configuration Management", () => {
       if (originalEnv) {
         process.env.DISCORD_WEBHOOK_URL = originalEnv;
       } else {
-        process.env.DISCORD_WEBHOOK_URL = undefined;
+        delete process.env.DISCORD_WEBHOOK_URL;
       }
     });
 
     it("should return error when no webhook URL is provided", () => {
       const originalEnv = process.env.DISCORD_WEBHOOK_URL;
-      process.env.DISCORD_WEBHOOK_URL = undefined;
+      delete process.env.DISCORD_WEBHOOK_URL;
 
       const result = loadConfig();
 
@@ -73,6 +73,8 @@ describe("Configuration Management", () => {
       // Restore original environment
       if (originalEnv) {
         process.env.DISCORD_WEBHOOK_URL = originalEnv;
+      } else {
+        delete process.env.DISCORD_WEBHOOK_URL;
       }
     });
   });
