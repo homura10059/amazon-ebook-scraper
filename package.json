@@ -20,8 +20,8 @@
     "clean": "pnpm -r run clean",
     "install:all": "pnpm install",
     "update:all": "pnpm update",
-    "pre-commit": "pnpm lint:fix",
-    "pre-push": "pnpm pre-commit"
+    "pre-commit": "pnpm lint:fix && pnpm typecheck",
+    "pre-push": "pnpm pre-commit && pnpm build && pnpm test"
   },
   "engines": {
     "node": ">=22.0.0",

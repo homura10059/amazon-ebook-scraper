@@ -43,14 +43,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint check
-        run: pnpm lint
-
-      - name: TypeScript type check
-        run: pnpm typecheck
-
-      - name: Run tests
-        run: pnpm test
-
-      - name: Build packages
-        run: pnpm build
+      - name: Quality check
+        run: pnpm pre-push
