@@ -84,6 +84,10 @@ pnpm test    # Verify all tests pass
 
 ### Coding Style and Paradigms
 
+#### Coding Standards and Documentation
+- @docs/coding-standards.md
+- **Important**: Follow the 4-element framework for Code (How), Test Code (What), Commit Messages (Why), and Code Comments (Why Not)
+
 #### TypeScript Import Conventions
 - **CRITICAL**: When importing TypeScript files, NEVER include file extensions
 - Use `import { module } from "./path"` (correct)
