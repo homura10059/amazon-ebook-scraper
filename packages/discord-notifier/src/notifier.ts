@@ -54,7 +54,7 @@ const createHttpOptions = (
     },
     hooks: {
       beforeRetry: [
-        (error, retryCount) => {
+        (error: Error, retryCount: number) => {
           console.warn(
             `Discord webhook request failed, retrying (${retryCount}/2):`,
             error.message
