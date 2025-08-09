@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { parseArguments } from './argument-parser';
-import type { CliArguments } from './types';
+import { parseArguments } from "./argument-parser";
+import type { CliArguments } from "./types";
 
 const HELP_TEXT = `
 Amazon Ebook Scraper CLI
@@ -29,12 +29,14 @@ const showHelp = (): void => {
 };
 
 const processUrls = (urls: readonly string[]): void => {
-  console.log('Processing URLs:');
+  console.log("Processing URLs:");
   for (const url of urls) {
     console.log(`  - ${url}`);
   }
-  console.log('\\n⚠️  Note: This is Step 1 implementation.');
-  console.log('   Actual scraping and notification will be implemented in later steps.');
+  console.log("\\n⚠️  Note: This is Step 1 implementation.");
+  console.log(
+    "   Actual scraping and notification will be implemented in later steps."
+  );
 };
 
 const handleArguments = (args: CliArguments): void => {
@@ -44,7 +46,7 @@ const handleArguments = (args: CliArguments): void => {
   }
 
   if (args.urls.length === 0) {
-    console.error('No URLs provided.');
+    console.error("No URLs provided.");
     showHelp();
     process.exit(1);
   }
@@ -66,7 +68,10 @@ const main = (): void => {
 };
 
 // Run the CLI if this file is executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (
+  typeof import.meta !== "undefined" &&
+  import.meta.url === `file://${process.argv[1]}`
+) {
   main();
 }
 
