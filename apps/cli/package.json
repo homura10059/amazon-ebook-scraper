@@ -20,8 +20,10 @@
     "amazon-ebook-scraper": "./dist/index.js"
   },
   "dependencies": {
+    "@amazon-ebook-scraper/discord-notifier": "workspace:*",
     "@amazon-ebook-scraper/scraper": "workspace:*",
-    "@amazon-ebook-scraper/discord-notifier": "workspace:*"
+    "@types/yargs": "^17.0.33",
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
