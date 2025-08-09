@@ -1,0 +1,27 @@
+# Lefthook configuration for Amazon Ebook Scraper
+# This ensures all team members share the same git hooks
+
+pre-push:
+  parallel: false
+  commands:
+    lint-and-format:
+      glob: "**/*.{ts,js,json}"
+      run: pnpm lint:fix && pnpm typecheck
+      stage_fixed: true
+    build:
+      run: pnpm build
+    test:
+      run: pnpm test
+
+# Optional: pre-commit hook for quick checks
+pre-commit:
+  parallel: true
+  commands:
+    lint:
+      glob: "**/*.{ts,js,json}"
+      run: pnpm lint:fix {staged_files}
+      stage_fixed: true
+
+# Install lefthook for new team members
+# Run: pnpm lefthook install
+install_command: pnpm lefthook install
