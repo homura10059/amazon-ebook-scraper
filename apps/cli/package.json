@@ -1,0 +1,42 @@
+{
+  "name": "@amazon-ebook-scraper/cli",
+  "version": "1.0.0",
+  "description": "Command-line interface for Amazon ebook scraper",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --write src && biome format --write src",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "cli": "tsx src/index.ts"
+  },
+  "bin": {
+    "amazon-ebook-scraper": "./dist/index.js"
+  },
+  "dependencies": {
+    "@amazon-ebook-scraper/discord-notifier": "workspace:*",
+    "@amazon-ebook-scraper/scraper": "workspace:*",
+    "@types/yargs": "^17.0.33",
+    "yargs": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsup": "^8.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.8.3",
+    "vitest": "^1.0.0"
+  },
+  "keywords": [
+    "cli",
+    "scraper",
+    "amazon",
+    "ebook",
+    "notifications"
+  ]
+}
