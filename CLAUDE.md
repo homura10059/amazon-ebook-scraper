@@ -58,29 +58,38 @@ This project uses [Biome](https://biomejs.dev/) for code formatting and linting:
 #### ESLint Prohibition
 **IMPORTANT**: ESLint is prohibited in this project. All packages must use Biome for linting and formatting. Do not add ESLint dependencies or configuration to any package.json files. Use `biome check` commands instead of `eslint` commands in package scripts.
 
-### Pre-push Verification
-**CRITICAL**: This project uses an automated pre-push hook that runs verification checks before allowing pushes. The hook automatically executes:
+### Git Hooks with Lefthook
+**CRITICAL**: This project uses [Lefthook](https://github.com/evilmartians/lefthook) to manage git hooks and ensure consistent pre-push verification across all team members. The pre-push hook automatically executes:
 
-1. **Lint Check**: `pnpm lint` - All linting rules must pass
+1. **Lint & Format Check**: `pnpm lint:fix && pnpm typecheck` - All linting rules must pass and types must be valid
 2. **Build Check**: `pnpm build` - All packages must compile successfully  
 3. **Test Check**: `pnpm test` - All tests must pass
 
-**Automated Hook**: The pre-push hook is available in `scripts/pre-push` and can be installed by running:
+**Automatic Installation**: Lefthook hooks are automatically installed when you run `pnpm install` (via `postinstall` script). 
+
+**Manual Hook Management:**
 ```bash
-./scripts/setup-hooks.sh
+# Install hooks manually
+pnpm hooks:install
+
+# Uninstall hooks
+pnpm hooks:uninstall
+
+# Reinstall hooks (if needed)
+pnpm lefthook install
 ```
 
-Once installed, the hook will automatically run these checks when you attempt to push. If any check fails, the push will be rejected.
+**Hook Configuration**: The git hooks are configured in `lefthook.yml` at the project root. This ensures all team members share the same git hooks automatically.
 
 **Manual Verification Workflow:**
 ```bash
 # Run all verification steps manually (same as the hook)
-pnpm lint    # Fix any linting issues
+pnpm lint:fix && pnpm typecheck  # Fix any linting issues and check types
 pnpm build   # Ensure code compiles
 pnpm test    # Verify all tests pass
 ```
 
-**IMPORTANT**: The pre-push hook ensures code quality and prevents broken builds in the repository. If the hook prevents a push, fix the issues and try pushing again.
+**IMPORTANT**: The lefthook pre-push hook ensures code quality and prevents broken builds in the repository. If the hook prevents a push, fix the issues and try pushing again.
 
 ### Coding Style and Paradigms
 

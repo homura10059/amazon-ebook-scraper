@@ -20,15 +20,25 @@
     "clean": "pnpm -r run clean",
     "install:all": "pnpm install",
     "update:all": "pnpm update",
+    "hooks:install": "lefthook install",
+    "hooks:uninstall": "lefthook uninstall",
     "pre-commit": "pnpm lint:fix && pnpm typecheck",
-    "pre-push": "pnpm pre-commit && pnpm build && pnpm test"
+    "pre-push": "pnpm pre-commit && pnpm build && pnpm test",
+    "postinstall": "lefthook install"
   },
   "engines": {
     "node": ">=22.0.0",
     "pnpm": ">=8.0.0"
   },
-  "keywords": ["amazon", "ebook", "scraper", "monorepo", "pnpm"],
+  "keywords": [
+    "amazon",
+    "ebook",
+    "scraper",
+    "monorepo",
+    "pnpm"
+  ],
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4"
+    "@biomejs/biome": "^1.9.4",
+    "lefthook": "^1.12.2"
   }
 }
