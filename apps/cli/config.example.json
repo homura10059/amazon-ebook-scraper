@@ -1,0 +1,15 @@
+{
+  "discord": {
+    "webhookUrl": "https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN",
+    "options": {
+      "username": "Amazon Ebook Scraper",
+      "allowMentions": false,
+      "timeout": 15000
+    }
+  },
+  "scraper": {
+    "timeout": 12000,
+    "retries": 3,
+    "delayBetweenRequests": 1500
+  }
+}
