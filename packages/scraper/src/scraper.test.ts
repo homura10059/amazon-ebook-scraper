@@ -1,13 +1,5 @@
 import got from "got";
-import {
-  type MockedFunction,
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { scrapeAmazonProduct } from "./scraper";
 import type { ScrapedProduct, ScraperError, ScraperOptions } from "./types";
 
@@ -25,7 +17,7 @@ interface MockGotError extends Error {
 
 // Mock the got library
 vi.mock("got");
-const mockedGot = got as MockedFunction<typeof got>;
+const mockedGot = vi.mocked(got);
 
 describe("scrapeAmazonProduct", () => {
   beforeEach(() => {

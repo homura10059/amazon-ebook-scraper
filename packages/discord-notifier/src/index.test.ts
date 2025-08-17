@@ -116,7 +116,9 @@ describe("Discord Notifier", () => {
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.type).toBe("validation_error");
-        expect(result.error.field).toBe("product");
+        if (result.error.type === "validation_error") {
+          expect(result.error.field).toBe("product");
+        }
       }
     });
 
@@ -128,7 +130,10 @@ describe("Discord Notifier", () => {
       const result = validateNotificationData(invalidData);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.field).toBe("product[0].title");
+        expect(result.error.type).toBe("validation_error");
+        if (result.error.type === "validation_error") {
+          expect(result.error.field).toBe("product[0].title");
+        }
       }
     });
 
@@ -145,7 +150,10 @@ describe("Discord Notifier", () => {
       const result = validateNotificationData(invalidData);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.field).toBe("product[0].timestamp");
+        expect(result.error.type).toBe("validation_error");
+        if (result.error.type === "validation_error") {
+          expect(result.error.field).toBe("product[0].timestamp");
+        }
       }
     });
 
@@ -207,17 +215,22 @@ describe("Discord Notifier", () => {
         expect(result.data.embeds).toHaveLength(1);
 
         const embed = result.data.embeds?.[0];
-        expect(embed.title).toContain("新しい商品");
-        expect(embed.fields).toBeDefined();
-        expect(embed.fields?.length).toBeGreaterThan(0);
+        expect(embed).toBeDefined();
+        if (embed) {
+          expect(embed.title).toContain("新しい商品");
+          expect(embed.fields).toBeDefined();
+          expect(embed.fields?.length).toBeGreaterThan(0);
 
-        // Check if product title is in fields
-        const titleField = embed.fields?.find((f) => f.name.includes("商品名"));
-        expect(titleField?.value).toBe("Test Book");
+          // Check if product title is in fields
+          const titleField = embed.fields?.find((f) =>
+            f.name.includes("商品名")
+          );
+          expect(titleField?.value).toBe("Test Book");
 
-        // Check if price is in fields
-        const priceField = embed.fields?.find((f) => f.name.includes("価格"));
-        expect(priceField?.value).toBe("¥1,000");
+          // Check if price is in fields
+          const priceField = embed.fields?.find((f) => f.name.includes("価格"));
+          expect(priceField?.value).toBe("¥1,000");
+        }
       }
     });
 
@@ -227,13 +240,16 @@ describe("Discord Notifier", () => {
 
       if (result.success) {
         const embed = result.data.embeds?.[0];
-        const sourceField = embed.fields?.find((f) =>
-          f.name.includes("ソース")
-        );
-        expect(sourceField?.value).toBe("Amazon");
+        expect(embed).toBeDefined();
+        if (embed) {
+          const sourceField = embed.fields?.find((f) =>
+            f.name.includes("ソース")
+          );
+          expect(sourceField?.value).toBe("Amazon");
 
-        const urlField = embed.fields?.find((f) => f.name.includes("URL"));
-        expect(urlField?.value).toBe("https://amazon.co.jp/test");
+          const urlField = embed.fields?.find((f) => f.name.includes("URL"));
+          expect(urlField?.value).toBe("https://amazon.co.jp/test");
+        }
       }
     });
 
@@ -270,19 +286,25 @@ describe("Discord Notifier", () => {
 
         // Check first embed
         const firstEmbed = result.data.embeds?.[0];
-        expect(firstEmbed.title).toContain("新しい商品が見つかりました #1");
-        const firstTitleField = firstEmbed.fields?.find((f) =>
-          f.name.includes("商品名")
-        );
-        expect(firstTitleField?.value).toBe("Test Book");
+        expect(firstEmbed).toBeDefined();
+        if (firstEmbed) {
+          expect(firstEmbed.title).toContain("新しい商品が見つかりました #1");
+          const firstTitleField = firstEmbed.fields?.find((f) =>
+            f.name.includes("商品名")
+          );
+          expect(firstTitleField?.value).toBe("Test Book");
+        }
 
         // Check second embed
         const secondEmbed = result.data.embeds?.[1];
-        expect(secondEmbed.title).toContain("新しい商品が見つかりました #2");
-        const secondTitleField = secondEmbed.fields?.find((f) =>
-          f.name.includes("商品名")
-        );
-        expect(secondTitleField?.value).toBe("Another Book");
+        expect(secondEmbed).toBeDefined();
+        if (secondEmbed) {
+          expect(secondEmbed.title).toContain("新しい商品が見つかりました #2");
+          const secondTitleField = secondEmbed.fields?.find((f) =>
+            f.name.includes("商品名")
+          );
+          expect(secondTitleField?.value).toBe("Another Book");
+        }
       }
     });
   });
